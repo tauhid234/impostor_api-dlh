@@ -45,21 +45,21 @@ public class SessionController {
     public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key){
         
         Optional<SessionModel> data = srv.getSession(nama);
-        if(data == null){
-          return new MessageResponse().NotFound();
-        }
+        if(data.isPresent()){
           return getDataKey(data, key);
+        }
+          return new MessageResponse().NotFound();
     }
     
     public ResponseEntity getDataKey(Optional v,String api_key){
         Optional<ApiKeyModel> data = skey.getKey(api_key);
         
-        if(data == null){
-          return new MessageResponse().NotFound();
-        }else if(data.equals("")){
-            
-        }
+        if(data.isPresent()){
           return new MessageResponse().Succes();
+        }else if(data.equals("")){
+          return new MessageResponse().BadRequest();            
+        }
+          return new MessageResponse().NotFound();
     }
     
     @PostMapping("/insert")
