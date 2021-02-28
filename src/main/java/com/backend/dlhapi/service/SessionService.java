@@ -21,6 +21,10 @@ public class SessionService {
         return repo.findByName(nama);
     }
     
+    public Optional<SessionModel> getPassword(String pass){
+        return repo.findByPassword(pass);
+    }
+    
     public void insert(SessionModel sc){
         repo.save(sc);
     }

@@ -42,16 +42,24 @@ public class SessionController {
     }
     
     @RequestMapping(path = "session_login", method = RequestMethod.POST)
-    public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key){
+    public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key, @RequestParam(value = "password", required = true) String pass){
         
         Optional<SessionModel> data = srv.getSession(nama);
         if(data.isPresent()){
-          return getDataKey(data, key);
+          return getPassword(pass, key);
         }
           return new MessageResponse().NotFound();
     }
     
-    public ResponseEntity getDataKey(Optional v,String api_key){
+    public ResponseEntity getPassword(String pass, String key){
+        Optional <SessionModel> data = srv.getPassword(pass);
+        if(data.isPresent()){
+            return getDataKey(key);
+        }
+        return new MessageResponse().NotFound();
+    }
+    
+    public ResponseEntity getDataKey(String api_key){
         Optional<ApiKeyModel> data = skey.getKey(api_key);
         
         if(data.isPresent()){
