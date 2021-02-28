@@ -7,6 +7,7 @@ import com.backend.dlhapi.service.ApiKeyService;
 import com.backend.dlhapi.service.SessionService;
 import java.util.Collection;
 import java.util.Optional;
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class SessionController {
     public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key){
         
         Optional<SessionModel> data = srv.getSession(nama);
-        if(data.isEmpty()){
+        if(isEmpty()){
           return new MessageResponse().NotFound();
         }
           return getDataKey(data, key);
@@ -70,7 +71,7 @@ public class SessionController {
         
         if(nama.equals("") || pass.equals("")){
             return new MessageResponse().BadRequest();
-        }else if(nama.isEmpty() || pass.isEmpty()){
+        }else if(isEmpty()){
             return new MessageResponse().NotFound();
         }
         srv.insert(sc);
@@ -87,7 +88,7 @@ public class SessionController {
             scc.setPassword(sc.getPass());
             srv.update(scc);
             return new ResponseEntity(HttpStatus.OK);
-        }else if(data.isEmpty()){
+        }else if(isEmpty()){
             return new MessageResponse().NotFound();
         }
             return new MessageResponse().BadRequest();
@@ -96,7 +97,7 @@ public class SessionController {
     @DeleteMapping("/delete")
     public ResponseEntity <Optional<SessionModel>> deleteAdmin(@RequestParam("name") String name){
         Optional data = srv.delete(name);
-        if(data.isEmpty()){
+        if(isEmpty()){
             return new MessageResponse().NotFound();
         }
             return new MessageResponse().Succes();
