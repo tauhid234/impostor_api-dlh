@@ -7,8 +7,11 @@ import com.backend.dlhapi.service.ApiKeyService;
 import com.backend.dlhapi.service.SessionService;
 import java.util.Collection;
 import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,12 +44,22 @@ public class SessionController {
 //            return (Collection<session_service>) new Message().Succes();
     }
     
+    @RequestMapping(path = "session_name", method= RequestMethod.POST)
+    public Optional<SessionModel> getSessionName(@RequestParam(value = "name") String name, HttpServletResponse response){
+        Optional<SessionModel> data = srv.getSession(name);
+        if(data.isPresent()){
+            return data;
+        }
+        return new MessageResponse().Unknown(data,response);
+    }
+    
+    
     @RequestMapping(path = "session_login", method = RequestMethod.POST)
-    public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key, @RequestParam(value = "password", required = true) String pass){
+    public ResponseEntity <Optional<SessionModel>> getDataLogin( @RequestParam(value = "name", required = true) String nama, @RequestParam(value = "api_key", required = true) String key, @RequestParam(value = "password", required = true) String password){
         
         Optional<SessionModel> data = srv.getSession(nama);
         if(data.isPresent()){
-          return getPassword(pass, key);
+          return getPassword(password, key);
         }
           return new MessageResponse().NotFound();
     }
@@ -92,7 +105,7 @@ public class SessionController {
         if(data.isPresent()){
             SessionModel scc = (SessionModel) data.get();
             scc.setName(sc.getName());
-            scc.setPassword(sc.getPass());
+            scc.setPassword(sc.getPassword());
             srv.update(scc);
             return new ResponseEntity(HttpStatus.OK);
         }else if(data == null){

@@ -8,24 +8,37 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection= "admin")
 public class SessionModel {
     @Id
-    private ObjectId id;    
+    private String id;    
     private String name;
     private String password;
+    private String jabatan;
+    private String email;
+    private String no_hp;
+    private String alamat;
     
     public SessionModel(){
         
     }
     
-    public SessionModel(String name,String pass){
+    public SessionModel(String name,String passwordnya, String id){
         this.name = name;
-        this.password = pass;
+        this.password = passwordnya;
+        this.id = id;
+    }
+    
+    public String getID(){
+        return id;
+    }
+    
+    public void setID(String id){
+        this.id = id;
     }
     
     public String getName() {
         return name;
     }
     
-    public String getPass(){
+    public String getPassword(){
         return password;
     }
     
@@ -36,5 +49,37 @@ public class SessionModel {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getJabatan(){
+        return jabatan;
+    }
+    
+    public void setJabatan(String jabatan){
+        this.jabatan = jabatan;
+    }
+    
+    public String getEmail(){
+        return email;
+    }
+    
+    public void setEmail(String email){
+        this.email = email;
+    }
+    
+    public String getNo_hp(){
+        return no_hp;
+    }
+    
+    public void setNo_hp(String no_hp){
+        this.no_hp = no_hp;
+    }
+    
+    public String getAlamat(){
+        return alamat;
+    }
+    
+    public void setAlamat(String alamat){
+        this.alamat = alamat;
     }
 }
