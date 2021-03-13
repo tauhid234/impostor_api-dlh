@@ -99,15 +99,24 @@ public class SessionController {
     }
     
 //    test
-    @PutMapping(value = "/update")    
-    public ResponseEntity updateAdmin(@RequestParam(value = "name") String nama,  @RequestParam("password") String pass, SessionModel sc){
-        Optional data = srv.getSession(nama);
+    @PutMapping(value = "update")    
+    public ResponseEntity updateAdmin(@RequestParam(value = "id") String id, 
+                                      @RequestParam(value = "name") String nama,  
+                                      @RequestParam("jabatan") String jabatan,
+                                      @RequestParam("email") String email,
+                                      @RequestParam("no_hp") String nohp,
+                                      @RequestParam("alamat") String alamat,SessionModel sc){
+        
+        Optional data = srv.getId(id);
         if(data.isPresent()){
             SessionModel scc = (SessionModel) data.get();
             scc.setName(sc.getName());
-            scc.setPassword(sc.getPassword());
+            scc.setJabatan(jabatan);
+            scc.setEmail(email);
+            scc.setNo_hp(nohp);
+            scc.setAlamat(alamat);
             srv.update(scc);
-            return new ResponseEntity(HttpStatus.OK);
+            return new MessageResponse().Succes();
         }else if(data == null){
             return new MessageResponse().NotFound();
         }
