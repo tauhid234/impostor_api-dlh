@@ -86,7 +86,7 @@ public class SessionController {
         
         if(!data.isEmpty()){
             
-            System.out.println("ENCODE WORKS "+enc);
+            
             return setApiKeyLogin(nama, enc, sm);
 //            return getDataKey(key);
         }
@@ -183,7 +183,9 @@ public class SessionController {
             SessionModel sm = (SessionModel) data.get();
             sm.setApikey(api_key);
             srv.update(sm);
-            return new MessageResponse().Succes();
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", "application/json; charset=utf-8");
+            return new ResponseEntity(data,header,HttpStatus.OK);
         }
         return new MessageResponse().BadRequest();
     }
