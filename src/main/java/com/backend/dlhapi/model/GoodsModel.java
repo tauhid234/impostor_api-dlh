@@ -3,7 +3,7 @@ package com.backend.dlhapi.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "barang")
+@Document(collection = "goods")
 public class GoodsModel {
     
     @Id
