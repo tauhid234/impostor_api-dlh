@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +47,30 @@ public class SessionController {
     
     private MongoTemplate mongotemplate;
     
-     @GetMapping("admin")
-    public Collection <SessionModel> getAll(){
-        return srv.getData();
+     @PostMapping("admin")
+    public ResponseEntity getAll(@RequestParam(value = "api_key") String api_key){
+        Optional<SessionModel> data = srv.ApiKeySet(api_key);
+        if(data.isPresent()){
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", "application/json; charset=utf-8");
+            return new ResponseEntity(srv.getData(),header, HttpStatus.OK);
+        }
+        return new MessageResponse().NotFound();
     }
     
     @RequestMapping(path = "session_name", method= RequestMethod.POST)
-    public Optional<SessionModel> getSessionName(@RequestParam(value = "name") String name, HttpServletResponse response){
+    public ResponseEntity getSessionName(@RequestParam(value = "name") String name, @RequestParam(value = "api_key") String api_key, HttpServletResponse response){
         Optional<SessionModel> data = srv.getSessionName(name);
-        if(data.isPresent()){
-            return data;
+        Optional data2 = srv.ApiKeySet(api_key);
+        if(data2.isPresent()){
+            
+            if(data.isPresent()){
+                HttpHeaders header = new HttpHeaders();
+                header.add("Content-Type", "application/json; charset=utf-8");
+                return new ResponseEntity(srv.getSessionName(name),header,HttpStatus.OK);
+            }
         }
-        return new MessageResponse().Unknown(data,response);
+        return new MessageResponse().NotFound();
     }
     
     
@@ -66,7 +79,9 @@ public class SessionController {
         
         List<SessionModel> data = srv.getSession(password, nama);
         GregorianCalendar gregorian = new GregorianCalendar();
-        String encode = String.valueOf(gregorian.get(Calendar.HOUR)+""+gregorian.get(Calendar.MINUTE)+""+gregorian.get(Calendar.MILLISECOND));
+        Random random = new Random();
+        int rand1 = random.nextInt(1000000000);
+        String encode = String.valueOf(gregorian.get(Calendar.HOUR_OF_DAY)+""+gregorian.get(Calendar.MINUTE)+""+gregorian.get(Calendar.MILLISECOND)+""+rand1);
         String enc = Base64.getEncoder().encodeToString(encode.getBytes());
         
         if(!data.isEmpty()){
@@ -78,16 +93,9 @@ public class SessionController {
           return new MessageResponse().NotFound();
     }
     
-//    public ResponseEntity getPassword(String pass, String key){
-//        Optional <SessionModel> data = srv.getPassword(pass);
-//        if(data.isPresent()){
-//            return getDataKey(key);
-//        }
-//        return new MessageResponse().NotFound();
-//    }
     
     public ResponseEntity getDataKey(String api_key){
-        Optional<ApiKeyModel> data = skey.getKey(api_key);
+        Optional<SessionModel> data = srv.ApiKeySet(api_key);
         
         if(data.isPresent()){
           return new MessageResponse().Succes();
@@ -97,24 +105,36 @@ public class SessionController {
           return new MessageResponse().NotFound();
     }
     
-    @PostMapping("/insert")
-    public ResponseEntity insertAdmin(@RequestParam("name") String nama, @RequestParam("password") String pass, SessionModel sc){
+    @RequestMapping(path = "insert", method = RequestMethod.POST)
+    public ResponseEntity insertAdmin(@RequestParam(value = "name") String nama, 
+            @RequestParam(value = "password") String pass, 
+            @RequestParam(value = "api_key") String api_key,
+            @RequestParam(value = "jabatan") String jabatan,
+            @RequestParam(value = "email") String email,
+            @RequestParam(value = "no_hp") String no_hp,
+            @RequestParam(value = "alamat") String alamat, SessionModel sc){
         
-        sc.setName(nama);
-        sc.setPassword(pass);
-        
-        if(nama.equals("") || pass.equals("")){
-            return new MessageResponse().BadRequest();
-        }else if(nama == null || pass == null){
-            return new MessageResponse().NotFound();
+        Optional data = srv.ApiKeySet(api_key);
+        if(data.isPresent()){
+            
+            sc.setName(nama);
+            sc.setPassword(pass);
+            sc.setJabatan(jabatan);
+            sc.setApikey("");
+            sc.setEmail(email);
+            sc.setNo_hp(no_hp);
+            sc.setAlamat(alamat);
+
+            srv.insert(sc);
+            return new MessageResponse().Succes();
         }
-        srv.insert(sc);
-        return new MessageResponse().Succes();
+        return new MessageResponse().BadRequest();
     }
     
 //    test
     @PutMapping(value = "update")    
     public ResponseEntity updateAdmin(@RequestParam(value = "id") String id, 
+                                      @RequestParam(value = "api_key") String api_key,
                                       @RequestParam(value = "name") String nama,  
                                       @RequestParam("jabatan") String jabatan,
                                       @RequestParam("email") String email,
@@ -122,7 +142,12 @@ public class SessionController {
                                       @RequestParam("alamat") String alamat,SessionModel sc){
         
         Optional data = srv.getId(id);
+        Optional data2 = srv.ApiKeySet(api_key);
+        
         if(data.isPresent()){
+            
+            if(data2.isPresent()){
+            
             SessionModel scc = (SessionModel) data.get();
             scc.setName(sc.getName());
             scc.setJabatan(jabatan);
@@ -130,7 +155,13 @@ public class SessionController {
             scc.setNo_hp(nohp);
             scc.setAlamat(alamat);
             srv.update(scc);
+                
             return new MessageResponse().Succes();
+            
+            }else{
+                return new MessageResponse().NotFound();
+            }
+            
         }else if(data == null){
             return new MessageResponse().NotFound();
         }
@@ -141,7 +172,7 @@ public class SessionController {
         Optional data = srv.getSessionName(name);
         if(data.isPresent()){
             SessionModel sm = (SessionModel) data.get();
-            sm.setApi_key(api_key);
+            sm.setApikey(api_key);
             srv.update(sm);
             return new MessageResponse().Succes();
         }
@@ -149,11 +180,12 @@ public class SessionController {
     }
     
     @DeleteMapping("/delete")
-    public ResponseEntity <Optional<SessionModel>> deleteAdmin(@RequestParam("name") String name){
-        Optional data = srv.delete(name);
-        if(data == null){
-            return new MessageResponse().NotFound();
-        }
+    public ResponseEntity <Optional<SessionModel>> deleteAdmin(@RequestParam("id") String id, @RequestParam("api_key") String api_key){
+        Optional data = srv.ApiKeySet(api_key);
+        if(data.isPresent()){
+            srv.delete(id);
             return new MessageResponse().Succes();
+        }
+            return new MessageResponse().NotFound();
     }
 }

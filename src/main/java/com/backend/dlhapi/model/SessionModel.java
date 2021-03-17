@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class SessionModel {
     @Id
     private String id;    
-    private String api_key;
+    private String apikey;
     private String name;
     private String password;
     private String jabatan;
@@ -35,12 +35,12 @@ public class SessionModel {
         this.id = id;
     }
     
-    public String getApi_key(){
-        return api_key;
+    public String getApikey(){
+        return apikey;
     }
     
-    public void setApi_key(String api_key){
-        this.api_key = api_key;
+    public void setApikey(String api_key){
+        this.apikey = api_key;
     }
     
     public String getName() {

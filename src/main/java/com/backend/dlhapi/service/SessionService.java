@@ -2,6 +2,7 @@ package com.backend.dlhapi.service;
 
 import com.backend.dlhapi.model.SessionModel;
 import com.backend.dlhapi.repository.SessionRepository;
+import com.backend.dlhapi.resource.MessageResponse;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +53,11 @@ public class SessionService {
         repo.save(sc);
     }
     
-    public Optional<SessionModel> delete(String name){
-        return repo.deleteByName(name);
+    public void delete(String id){
+        repo.deleteById(id);
+    }
+    
+    public Optional<SessionModel> ApiKeySet(String api_key){
+        return repo.findByApikey(api_key);
     }
 }

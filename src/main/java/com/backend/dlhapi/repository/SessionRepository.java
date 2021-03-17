@@ -12,4 +12,6 @@ public interface SessionRepository extends MongoRepository<SessionModel, String>
     public Optional<SessionModel> findByPassword(String password);
     
     public Optional<SessionModel> deleteByName(String name);
+    
+    public Optional<SessionModel> findByApikey(String api_key);
 }
