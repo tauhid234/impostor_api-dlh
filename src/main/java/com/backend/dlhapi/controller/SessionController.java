@@ -117,6 +117,10 @@ public class SessionController {
         Optional data = srv.ApiKeySet(api_key);
         if(data.isPresent()){
             
+            if(nama.equals("") || pass.equals("") || jabatan.equals("") || email.equals("") || no_hp.equals("") || alamat.equals("")){
+                return new MessageResponse().BadRequest();
+            }
+            
             sc.setName(nama);
             sc.setPassword(pass);
             sc.setJabatan(jabatan);
@@ -149,6 +153,11 @@ public class SessionController {
             if(data2.isPresent()){
             
             SessionModel scc = (SessionModel) data.get();
+            
+            if(nama.equals("") || jabatan.equals("") || email.equals("") || nohp.equals("") || alamat.equals("")){
+                return new MessageResponse().BadRequest();
+            }
+            
             scc.setName(sc.getName());
             scc.setJabatan(jabatan);
             scc.setEmail(email);
