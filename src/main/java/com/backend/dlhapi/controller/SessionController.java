@@ -60,14 +60,14 @@ public class SessionController {
     
     @RequestMapping(path = "session_name", method= RequestMethod.POST)
     public ResponseEntity getSessionName(@RequestParam(value = "name") String name, @RequestParam(value = "api_key") String api_key, HttpServletResponse response){
-        Optional<SessionModel> data = srv.getSessionName(name);
+        Optional<SessionModel> data = srv.getSessionName(name.toLowerCase());
         Optional data2 = srv.ApiKeySet(api_key);
         if(data2.isPresent()){
             
             if(data.isPresent()){
                 HttpHeaders header = new HttpHeaders();
                 header.add("Content-Type", "application/json; charset=utf-8");
-                return new ResponseEntity(srv.getSessionName(name),header,HttpStatus.OK);
+                return new ResponseEntity(data,header,HttpStatus.OK);
             }
         }
         return new MessageResponse().NotFound();
@@ -121,7 +121,7 @@ public class SessionController {
                 return new MessageResponse().BadRequest();
             }
             
-            sc.setName(nama);
+            sc.setName(nama.toLowerCase());
             sc.setPassword(pass);
             sc.setJabatan(jabatan);
             sc.setApikey("");
@@ -158,7 +158,7 @@ public class SessionController {
                 return new MessageResponse().BadRequest();
             }
             
-            scc.setName(sc.getName());
+            scc.setName(sc.getName().toLowerCase());
             scc.setJabatan(jabatan);
             scc.setEmail(email);
             scc.setNo_hp(nohp);
