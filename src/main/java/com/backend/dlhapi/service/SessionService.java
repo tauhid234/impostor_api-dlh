@@ -22,7 +22,10 @@ public class SessionService {
     
     //    FINDALL
     public Collection<SessionModel> getData(){
-        return repo.findAll();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("name").ne("huli"));
+        List<SessionModel> ss = mongoTemplate.find(query, SessionModel.class);
+        return ss;
     }
     
     public List<SessionModel> getSession(String pass, String name){
