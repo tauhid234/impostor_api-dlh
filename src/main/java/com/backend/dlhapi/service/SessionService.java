@@ -21,9 +21,9 @@ public class SessionService {
     private MongoTemplate mongoTemplate;
     
     //    FINDALL
-    public Collection<SessionModel> getData(){
+    public Collection<SessionModel> getData(String name){
         Query query = new Query();
-        query.addCriteria(Criteria.where("name").ne("huli"));
+        query.addCriteria(Criteria.where("name").ne(name));
         List<SessionModel> ss = mongoTemplate.find(query, SessionModel.class);
         return ss;
     }

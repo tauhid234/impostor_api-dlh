@@ -48,12 +48,15 @@ public class SessionController {
     private MongoTemplate mongotemplate;
     
      @PostMapping("admin")
-    public ResponseEntity getAll(@RequestParam(value = "api_key") String api_key){
+    public ResponseEntity getAll(@RequestParam(value = "api_key") String api_key, @RequestParam(value = "name") String name){
         Optional<SessionModel> data = srv.ApiKeySet(api_key);
+        Optional<SessionModel> data2 = srv.getSessionName(name);
         if(data.isPresent()){
-            HttpHeaders header = new HttpHeaders();
-            header.add("Content-Type", "application/json; charset=utf-8");
-            return new ResponseEntity(srv.getData(),header, HttpStatus.OK);
+            if(data2.isPresent()){
+                HttpHeaders header = new HttpHeaders();
+                header.add("Content-Type", "application/json; charset=utf-8");
+                return new ResponseEntity(srv.getData(name),header, HttpStatus.OK);
+            }
         }
         return new MessageResponse().NotFound();
     }
