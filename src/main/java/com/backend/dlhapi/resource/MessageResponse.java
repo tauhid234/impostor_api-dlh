@@ -18,6 +18,15 @@ public class MessageResponse {
         return new ResponseEntity(data.toString(),header,HttpStatus.OK);
     }
     
+    public ResponseEntity Empty(){
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", "application/json; charset=utf-8");
+        JSONObject data = new JSONObject();
+        data.putOnce("message", "VALUE IS EMPTY");
+        data.putOnce("status", "success");
+        return new ResponseEntity(data.toString(),header,HttpStatus.NO_CONTENT);
+    }
+    
     public ResponseEntity Accept(Optional data2){
         HttpHeaders header = new HttpHeaders();
         header.add("Content-Type", "application/json; charset=utf-8");
