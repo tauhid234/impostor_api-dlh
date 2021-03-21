@@ -50,7 +50,7 @@ public class GoodsController {
         return new MessageResponse().NotFound();
     }
     
-    @GetMapping("goods_data")
+    @PostMapping("goods_data")
     public ResponseEntity getAllGoods(@RequestParam("api_key") String api_key){
         Collection data = svc.getDataGoods();
         Optional data2 = service.ApiKeySet(api_key);
