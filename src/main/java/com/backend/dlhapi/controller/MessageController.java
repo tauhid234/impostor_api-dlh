@@ -32,7 +32,7 @@ public class MessageController {
                                      @RequestParam(value = "id_penerima") String id_penerima){
         
         Optional sessionApiKey = session.ApiKeySet(api_key);
-        List<MessageModel> data = service.getMessage(msg_to, msg_by, id_pengirim, id_penerima);
+        List<MessageModel> data = service.getMessage(id_pengirim, id_penerima);
         if(sessionApiKey.isPresent()){
             if(!data.isEmpty()){
                 return updateReceivedMessage(data, msg_to, msg_by);
