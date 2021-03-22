@@ -32,7 +32,7 @@ public class MessageController {
         List<MessageModel> data = service.getMessage(msg_to, msg_by);
         if(sessionApiKey.isPresent()){
             if(!data.isEmpty()){
-                return updateReceivedMessage(data, msg_to);
+                return updateReceivedMessage(data, msg_to, msg_by);
             }
         }
         return new MessageResponse().NotFound();
@@ -61,9 +61,9 @@ public class MessageController {
          return new MessageResponse().NotFound();
     }
     
-    private ResponseEntity updateReceivedMessage(List<MessageModel> model ,String msg_to){
+    private ResponseEntity updateReceivedMessage(List<MessageModel> model ,String msg_to, String msg_by){
         
-            service.ReceivedUpdate(msg_to);
+            service.ReceivedUpdate(msg_to, msg_by);
             HttpHeaders header = new HttpHeaders();
             header.add("Content-Type", "application/json; charset=utf-8");
             return new ResponseEntity(model,header,HttpStatus.OK);        
