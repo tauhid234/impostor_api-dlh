@@ -27,9 +27,12 @@ public class MessageController {
     private SessionService session;
     
     @PostMapping("message")
-    public ResponseEntity getMessage(@RequestParam(value = "msg_to") String msg_to, @RequestParam(value = "msg_by") String msg_by, @RequestParam(value = "api_key") String api_key){
+    public ResponseEntity getMessage(@RequestParam(value = "msg_to") String msg_to, @RequestParam(value = "msg_by") String msg_by, 
+                                     @RequestParam(value = "api_key") String api_key, @RequestParam(value = "id_pengirim") String id_pengirim,
+                                     @RequestParam(value = "id_penerima") String id_penerima){
+        
         Optional sessionApiKey = session.ApiKeySet(api_key);
-        List<MessageModel> data = service.getMessage(msg_to, msg_by);
+        List<MessageModel> data = service.getMessage(msg_to, msg_by, id_pengirim, id_penerima);
         if(sessionApiKey.isPresent()){
             if(!data.isEmpty()){
                 return updateReceivedMessage(data, msg_to, msg_by);
@@ -41,7 +44,8 @@ public class MessageController {
     @PostMapping("send_message")
     public ResponseEntity sendMessage(@RequestParam(value = "api_key") String api_key,
                                       @RequestParam(value = "message_by") String message_by, @RequestParam(value = "message_to") String message_to,
-                                      @RequestParam(value = "message") String message, @RequestParam(value = "date") String date, MessageModel model){
+                                      @RequestParam(value = "message") String message, @RequestParam(value = "date") String date, 
+                                      @RequestParam(value = "id_pengirim") String id_pengirim, @RequestParam(value = "id_penerima") String id_penerima,MessageModel model){
         
         Optional<SessionModel> sessionApiKey = session.ApiKeySet(api_key);
         if(sessionApiKey.isPresent()){
@@ -49,6 +53,8 @@ public class MessageController {
                 return new MessageResponse().Empty();
             }
             
+            model.setId_pengirim(id_pengirim);
+            model.setId_penerima(id_penerima);
             model.setMessage_by(message_by);
             model.setMessage_to(message_to);
             model.setReceived(String.valueOf(false));

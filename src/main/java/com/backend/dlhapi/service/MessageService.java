@@ -19,10 +19,12 @@ public class MessageService {
     @Autowired
     private MongoTemplate mongoTemplate;
     
-    public List<MessageModel> getMessage(String msg_to, String msg_by){
+    public List<MessageModel> getMessage(String msg_to, String msg_by, String id_pengirim, String id_penerima){
         Query query = new Query();
         query.addCriteria(Criteria.where("message_to").is(msg_to));
         query.addCriteria(Criteria.where("message_by").is(msg_by));
+        query.addCriteria(Criteria.where("id_pengirim").is(id_pengirim));
+        query.addCriteria(Criteria.where("id_penerima").is(id_penerima));
         List<MessageModel> model = mongoTemplate.find(query, MessageModel.class);
         return model;
     }

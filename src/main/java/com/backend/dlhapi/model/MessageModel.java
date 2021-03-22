@@ -8,6 +8,8 @@ public class MessageModel {
     
     @Id
     private String id;
+    private String id_pengirim;
+    private String id_penerima;
     private String message_by;
     private String message_to;
     private String received;
@@ -24,6 +26,22 @@ public class MessageModel {
     
     public String getId(){
         return id;
+    }
+    
+    public void setId_pengirim(String id_pengirim){
+        this.id_pengirim = id_pengirim;
+    }
+    
+    public String getId_pengirim(){
+        return id_pengirim;
+    }
+    
+    public void setId_penerima(String id_penerima){
+        this.id_penerima = id_penerima;
+    }
+    
+    public String getId_penerima(){
+        return id_penerima;
     }
     
     public void setMessage_by(String msg_by){
