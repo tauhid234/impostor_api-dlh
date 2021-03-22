@@ -40,4 +40,13 @@ public class MessageService {
         update.set("received", "true");
         mongoTemplate.updateMulti(query, update, MessageModel.class);
     }
+    
+    public List<MessageModel> getNotif(String api_key, String msg_to){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("received").is("false"));
+        query.addCriteria(Criteria.where("message_to").is(msg_to));
+        
+        List<MessageModel> model =  mongoTemplate.find(query, MessageModel.class);
+        return model;
+    }
 }

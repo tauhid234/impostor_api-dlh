@@ -69,6 +69,17 @@ public class MessageController {
             return new ResponseEntity(model,header,HttpStatus.OK);        
             
     }
+    
+    @PostMapping("notification_message")
+    private ResponseEntity getNotificationMessage(@RequestParam(value = "api_key") String api_key, @RequestParam(value = "message_to") String message_to){
+        List<MessageModel> model = service.getNotif(api_key, message_to);
+        if(!model.isEmpty()){
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", "application/json; charset=utf-8");
+            return new ResponseEntity(model,header,HttpStatus.OK);
+        }
+        return new MessageResponse().NotFound();
+    }
             
     
 }
