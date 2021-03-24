@@ -29,7 +29,8 @@ public class GoodsController {
     private SessionService service;
     
     @RequestMapping(path = "insert_goods", method = RequestMethod.POST)
-    public ResponseEntity insertOfGoods(@RequestParam("api_key") String api_key, @RequestParam("name") String name, @RequestParam("date") String date, @RequestParam("amount") String amount, GoodsModel model){
+    public ResponseEntity insertOfGoods(@RequestParam("api_key") String api_key, @RequestParam("name") String name, @RequestParam("date") String date, 
+                                        @RequestParam("amount") String amount, @RequestParam("year") String year, GoodsModel model){
         
         if(name.equals("")){
             return new MessageResponse().BadRequest();
@@ -41,6 +42,7 @@ public class GoodsController {
             if(!data2.isEmpty()){
                 model.setName(name);
                 model.setDate(date);
+                model.setYear(year);
                 model.setAmount(amount);
                 
                 svc.insertGoods(model);
