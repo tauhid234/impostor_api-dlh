@@ -10,6 +10,7 @@ public class GoodsModel {
     private String id;
     private String name;
     private String date;
+    private String year;
     private String amount;
     
     public GoodsModel(){
@@ -38,6 +39,14 @@ public class GoodsModel {
     
     public String getDate(){
         return date;
+    }
+    
+    public void setYear(String year){
+        this.year = year;
+    }
+    
+    public String getYear(){
+        return year;
     }
     
     public void setAmount(String amount){
