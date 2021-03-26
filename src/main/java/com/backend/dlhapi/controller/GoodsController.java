@@ -5,6 +5,7 @@ import com.backend.dlhapi.resource.MessageResponse;
 import com.backend.dlhapi.service.GoodsService;
 import com.backend.dlhapi.service.SessionService;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +31,7 @@ public class GoodsController {
     
     @RequestMapping(path = "insert_goods", method = RequestMethod.POST)
     public ResponseEntity insertOfGoods(@RequestParam("api_key") String api_key, @RequestParam("name") String name, @RequestParam("date") String date, 
-                                        @RequestParam("amount") String amount, GoodsModel model){
+                                        @RequestParam("year") String year, @RequestParam("amount") String amount, GoodsModel model){
         
         if(name.equals("")){
             return new MessageResponse().BadRequest();
@@ -38,10 +39,14 @@ public class GoodsController {
         
         Optional data = service.ApiKeySet(api_key);
         Collection data2 = svc.getDataGoods();
-        if(data.isPresent()){
+        
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data.isPresent()){
             if(!data2.isEmpty()){
                 model.setName(name);
                 model.setDate(date);
+                model.setYear(year);
                 model.setAmount(amount);
                 
                 svc.insertGoods(model);
@@ -51,11 +56,28 @@ public class GoodsController {
         return new MessageResponse().NotFound();
     }
     
+    @PostMapping("count_goods")
+    public ResponseEntity getDataCount(@RequestParam("api_key") String api_key, @RequestParam("year") String year){
+        Optional dataApiKey = service.ApiKeySet(api_key);
+        
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(dataApiKey.isPresent()){
+            List<GoodsModel> data = svc.CountData(year);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("Content-type", "application/json; charset=utf-8");
+            return new ResponseEntity(data,httpHeaders,HttpStatus.OK);
+        }
+        return new MessageResponse().NotFound();
+    }
+    
     @PostMapping("goods_data")
     public ResponseEntity getAllGoods(@RequestParam("api_key") String api_key){
         Collection data = svc.getDataGoods();
         Optional data2 = service.ApiKeySet(api_key);
-        if(data2.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data2.isPresent()){
             if(!data.isEmpty()){
                 HttpHeaders header = new HttpHeaders();
                 header.add("Content-Type", "application/json; charset=utf-8");

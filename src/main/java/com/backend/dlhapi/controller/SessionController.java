@@ -51,7 +51,9 @@ public class SessionController {
     public ResponseEntity getAll(@RequestParam(value = "api_key") String api_key, @RequestParam(value = "name") String name){
         Optional<SessionModel> data = srv.ApiKeySet(api_key);
         Optional<SessionModel> data2 = srv.getSessionName(name);
-        if(data.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data.isPresent()){
             if(data2.isPresent()){
                 HttpHeaders header = new HttpHeaders();
                 header.add("Content-Type", "application/json; charset=utf-8");
@@ -65,7 +67,9 @@ public class SessionController {
     public ResponseEntity getSessionName(@RequestParam(value = "name") String name, @RequestParam(value = "api_key") String api_key, HttpServletResponse response){
         Optional<SessionModel> data = srv.getSessionName(name.toLowerCase());
         Optional data2 = srv.ApiKeySet(api_key);
-        if(data2.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data2.isPresent()){
             
             if(data.isPresent()){
                 HttpHeaders header = new HttpHeaders();
@@ -118,7 +122,9 @@ public class SessionController {
             @RequestParam(value = "alamat") String alamat, SessionModel sc){
         
         Optional data = srv.ApiKeySet(api_key);
-        if(data.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data.isPresent()){
             
             if(nama.equals("") || pass.equals("") || jabatan.equals("") || email.equals("") || no_hp.equals("") || alamat.equals("")){
                 return new MessageResponse().BadRequest();
@@ -151,7 +157,9 @@ public class SessionController {
         Optional data = srv.getId(id);
         Optional data2 = srv.ApiKeySet(api_key);
         
-        if(data.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data.isPresent()){
             
             if(data2.isPresent()){
             
@@ -196,7 +204,9 @@ public class SessionController {
     @DeleteMapping("/delete")
     public ResponseEntity <Optional<SessionModel>> deleteAdmin(@RequestParam("id") String id, @RequestParam("api_key") String api_key){
         Optional data = srv.ApiKeySet(api_key);
-        if(data.isPresent()){
+        if(api_key.equals("")){
+            return new MessageResponse().Empty();
+        }else if(data.isPresent()){
             srv.delete(id);
             return new MessageResponse().Succes();
         }
