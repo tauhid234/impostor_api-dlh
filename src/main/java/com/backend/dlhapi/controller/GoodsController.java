@@ -1,7 +1,9 @@
 package com.backend.dlhapi.controller;
 
+import com.backend.dlhapi.model.EntryGoodsModel;
 import com.backend.dlhapi.model.GoodsModel;
 import com.backend.dlhapi.resource.MessageResponse;
+import com.backend.dlhapi.service.EntryGoodsService;
 import com.backend.dlhapi.service.GoodsService;
 import com.backend.dlhapi.service.SessionService;
 import java.util.Collection;
@@ -28,6 +30,9 @@ public class GoodsController {
     
     @Autowired
     private SessionService service;
+    
+    @Autowired
+    private EntryGoodsService entry_service;
     
     @RequestMapping(path = "insert_goods", method = RequestMethod.POST)
     public ResponseEntity insertOfGoods(@RequestParam("api_key") String api_key, @RequestParam("name") String name, @RequestParam("date") String date, 
@@ -86,6 +91,43 @@ public class GoodsController {
                 return new ResponseEntity(svc.getDataGoods(), header, HttpStatus.OK);
             }
         }
+        return new MessageResponse().NotFound();
+    }
+    
+    @PostMapping("inventory_in")
+    public ResponseEntity inventory_in(@RequestParam("api_key") String api_key, @RequestParam("name") String name, 
+                                       @RequestParam("amount_entry") String amount_entry, @RequestParam("information") String information, 
+                                       @RequestParam("date") String date, GoodsModel gm, EntryGoodsModel em){
+        
+        
+        int amount = 0;
+        int amount2 = 2;
+        int total = 0;
+        
+        List<GoodsModel> data = svc.foundExistData(name);
+        Optional apiKey = service.ApiKeySet(api_key);
+        
+        if(apiKey.isPresent()){
+            if(!data.isEmpty()){
+                for(int i = 0; i < data.size(); i++){
+                    amount = Integer.parseInt(data.get(i).getAmount());
+                    total = amount + amount2;
+
+
+                    GoodsModel update = data.get(i);
+                    update.setAmount(String.valueOf(total));
+                    svc.updateGoods(update);
+                    
+                    em.setName(name);
+                    em.setAmount_entry(amount_entry);
+                    em.setInformation(information);
+                    em.setDate(date);
+                    
+                    entry_service.saveInventoryIn(em);
+                    return new ResponseEntity(total,HttpStatus.OK);
+                }
+            }
+        }        
         return new MessageResponse().NotFound();
     }
 }

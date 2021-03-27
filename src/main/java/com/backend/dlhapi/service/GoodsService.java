@@ -42,5 +42,9 @@ public class GoodsService {
         Goodsrepo.save(gd);
     }
     
+    public void updateGoods(GoodsModel gd){
+        Goodsrepo.save(gd);
+    }
+    
 }
     
