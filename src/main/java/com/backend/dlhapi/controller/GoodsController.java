@@ -38,12 +38,14 @@ public class GoodsController {
         }
         
         Optional data = service.ApiKeySet(api_key);
-        Collection data2 = svc.getDataGoods();
+        List<GoodsModel> data2 = svc.foundExistData(name);
         
         if(api_key.equals("")){
             return new MessageResponse().Empty();
         }else if(data.isPresent()){
             if(!data2.isEmpty()){
+                return new ResponseEntity(HttpStatus.FOUND);
+            }else{
                 model.setName(name);
                 model.setDate(date);
                 model.setYear(year);

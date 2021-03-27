@@ -24,6 +24,13 @@ public class GoodsService {
         return Goodsrepo.findAll();
     }
     
+    public List<GoodsModel> foundExistData(String name){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("name").is(name));
+        List<GoodsModel> data =  mongoTemplate.find(query, GoodsModel.class);
+        return data;
+    }
+    
     public List<GoodsModel> CountData(String year){
         Query query = new Query();
         query.addCriteria(Criteria.where("year").is(year));
