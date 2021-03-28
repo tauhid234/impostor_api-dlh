@@ -124,7 +124,7 @@ public class GoodsController {
                     em.setDate(date);
                     
                     entry_service.saveInventoryIn(em);
-                    return new ResponseEntity(total,HttpStatus.OK);
+                    return new ResponseEntity(HttpStatus.OK);
                 }
             }
         }        
