@@ -111,7 +111,7 @@ public class GoodsController {
             if(!data.isEmpty()){
                 for(int i = 0; i < data.size(); i++){
                     amount = Integer.parseInt(data.get(i).getAmount());
-                    total = amount + amount2;
+                    total = amount + Integer.parseInt(amount_entry);
 
 
                     GoodsModel update = data.get(i);
