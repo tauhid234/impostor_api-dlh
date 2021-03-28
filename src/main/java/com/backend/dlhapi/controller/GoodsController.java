@@ -2,10 +2,12 @@ package com.backend.dlhapi.controller;
 
 import com.backend.dlhapi.model.EntryGoodsModel;
 import com.backend.dlhapi.model.GoodsModel;
+import com.backend.dlhapi.model.OutGoodsModel;
 import com.backend.dlhapi.resource.MessageResponse;
 import com.backend.dlhapi.service.EntryGoodsService;
 import com.backend.dlhapi.service.GoodsService;
 import com.backend.dlhapi.service.SessionService;
+import com.backend.dlhapi.service.outGoodsService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,9 @@ public class GoodsController {
     
     @Autowired
     private EntryGoodsService entry_service;
+    
+    @Autowired
+    private outGoodsService out_service;
     
     @RequestMapping(path = "insert_goods", method = RequestMethod.POST)
     public ResponseEntity insertOfGoods(@RequestParam("api_key") String api_key, @RequestParam("name") String name, @RequestParam("date") String date, 
@@ -124,6 +129,46 @@ public class GoodsController {
                     em.setDate(date);
                     
                     entry_service.saveInventoryIn(em);
+                    return new MessageResponse().Succes();
+                }
+            }
+        }        
+        return new MessageResponse().NotFound();
+    }
+    
+    @PostMapping("inventory_out")
+    public ResponseEntity inventory_out(@RequestParam("api_key") String api_key, @RequestParam("name") String name, 
+                                       @RequestParam("amount_out") String amount_out, @RequestParam("information") String information, 
+                                       @RequestParam("date") String date, GoodsModel gm, OutGoodsModel em){
+        
+        
+        int amount = 0;
+        int total = 0;
+        
+        List<GoodsModel> data = svc.foundExistData(name);
+        Optional apiKey = service.ApiKeySet(api_key);
+        
+        if(apiKey.isPresent()){
+            if(!data.isEmpty()){
+                for(int i = 0; i < data.size(); i++){
+                    amount = Integer.parseInt(data.get(i).getAmount());
+                    total = amount - Integer.parseInt(amount_out);
+                    
+                    if(total < 0){
+                        return new ResponseEntity(HttpStatus.EXPECTATION_FAILED);
+                    }
+
+
+                    GoodsModel update = data.get(i);
+                    update.setAmount(String.valueOf(total));
+                    svc.updateGoods(update);
+                    
+                    em.setName(name);
+                    em.setAmount_out(amount_out);
+                    em.setInformation(information);
+                    em.setDate(date);
+                    
+                    out_service.saveInventoryIn(em);
                     return new MessageResponse().Succes();
                 }
             }
