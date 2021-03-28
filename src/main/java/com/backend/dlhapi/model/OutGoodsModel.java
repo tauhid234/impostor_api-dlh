@@ -3,7 +3,7 @@ package com.backend.dlhapi.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "entry_goods")
+@Document(collection = "out_goods")
 public class OutGoodsModel {
 
     @Id
@@ -34,14 +34,14 @@ public class OutGoodsModel {
     }
     
     public String getAmount_out(){
-        return getAmount_out();
+        return amount_out;
     }
     
     public void setInformation(String information){
         this.information = information;
     }
     
-    public String getInforamtion(){
+    public String getInformation(){
         return information;
     }
     

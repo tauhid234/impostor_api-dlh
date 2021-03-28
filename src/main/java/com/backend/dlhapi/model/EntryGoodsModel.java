@@ -33,14 +33,14 @@ public class EntryGoodsModel {
     }
     
     public String getAmount_entry(){
-        return getAmount_entry();
+        return amount_entry;
     }
     
     public void setInformation(String information){
         this.information = information;
     }
     
-    public String getInforamtion(){
+    public String getInformation(){
         return information;
     }
     
